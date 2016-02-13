@@ -24,6 +24,7 @@ gem 'puma'
 
 gem 'activeadmin', '~> 1.0.0.pre2'
 gem 'bitmask_attributes'
+gem 'devise'
 gem 'cancan'
 
 group :development, :test do

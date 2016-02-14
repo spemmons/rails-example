@@ -1,0 +1,12 @@
+{
+  "name": "dsl-generated dependencies",
+  "dependencies": {
+    "angular": "~> 1.4",
+    "angular-route": "~>1.4",
+    "angular-resource": "~>1.4",
+    "d3": "~>3.5.0",
+    "ng-token-auth": "~> 0.0.24",
+    "underscore": "~> 1.8.3",
+    "angular-mocks": "~> 1.4"
+  }
+}

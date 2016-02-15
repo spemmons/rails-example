@@ -5,6 +5,7 @@ asset 'angular', '~> 1.4'
 asset 'angular-route', '~>1.4'
 asset 'angular-resource', '~>1.4'
 asset 'd3', '~>3.5.0'
+asset 'jquery'
 asset 'ng-token-auth', '~> 0.0.24'
 asset 'underscore', '~> 1.8.3'
 

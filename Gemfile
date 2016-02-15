@@ -26,9 +26,10 @@ gem 'bcrypt', '~> 3.1.7'
 
 gem 'puma'
 
-gem 'activeadmin', '~> 1.0.0.pre2'
+gem 'activeadmin', github: 'streamatica/activeadmin'
 gem 'bitmask_attributes'
 gem 'devise'
+gem 'devise_token_auth',github: 'streamatica/devise_token_auth'
 gem 'cancan'
 
 group :development, :test do

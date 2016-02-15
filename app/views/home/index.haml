@@ -2,8 +2,22 @@
   .container
     .navbar-header
       .navbar-brand TopTal Test App
+    %ul.nav.navbar-nav.navbar-right
+      %li
+        %a(ng-click='signOut()' ng-if='user.signedIn') Sign Out
 .container
   .navbar.navbar-default &nbsp;
-  %h1 Home!
-
-  %p This is the welcome text.
+  %form.form-horizontal(ng-init='credentials = {}' ng-submit='signIn(credentials)' ng-if='user.signedOut && !user.signedIn')
+    .form-group
+      %label.col-lg-2 Email
+      .col-lg-10
+        %input.form-control(type='text' ng-model='credentials.email')
+    .form-group
+      %label.col-lg-2 Password
+      .col-lg-10
+        %input.form-control(type='password' ng-model='credentials.password')
+    .form-group
+      %button.col-lg-10.col-lg-offset-2 Please Sign-In
+    .alert.alert-danger(ng-show='errorMessage.length > 0') {{ errorMessage }}
+  .container(ng-if='user.signedIn')
+    Welcome to JogTime!

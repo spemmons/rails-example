@@ -15,6 +15,7 @@
 //= require angular-resource/angular-resource
 //= require angular-cookie/angular-cookie
 //= require d3/d3
+//= require jquery/dist/jquery
 //= require ng-token-auth/dist/ng-token-auth
 //= require underscore/underscore
 

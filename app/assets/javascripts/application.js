@@ -11,9 +11,10 @@
 // about supported directives.
 //
 //= require angular/angular
-//= require angular-route/angular-route
-//= require angular-resource/angular-resource
 //= require angular-cookie/angular-cookie
+//= require angular-resource/angular-resource
+//= require angular-route/angular-route
+//= require angular-rails-templates
 //= require d3/d3
 //= require jquery/dist/jquery
 //= require ng-token-auth/dist/ng-token-auth
@@ -21,3 +22,4 @@
 
 //= require app
 //= require_tree ./controllers
+//= require_tree ./directives

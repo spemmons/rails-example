@@ -15,53 +15,32 @@ app.config(['$locationProvider','$authProvider','$httpProvider',function($locati
 app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
   $auth.initialize();
 
-  console.log('INITIALIZE');
-  console.log($rootScope.user);
-
   $auth.validateUser().then(
     function(user){
-      delete user.signedOut;
-      console.log('VALID USER!');
-      console.log(user);
+      $rootScope.user.signedOut = false;
     },
     function(result){
-      console.log('NO USER!');
-      console.log(result);
       $rootScope.user.signedOut = true;
     });
 
   $rootScope.errorMessages = '';
   $rootScope.signIn = function(credentials) {
-    console.log('SIGN IN');
-    console.log($rootScope.user);
-    console.log(credentials);
     $auth.submitLogin(credentials)
-      .then(function(user) {
-        console.log('SIGN IN SUCCESS');
-        console.log(user);
-      })
       .catch(function(resp) {
         console.log('SIGN IN FAILURE');
         console.log(resp);
-        console.log($rootScope.user);
         $rootScope.errorMessage = resp.errors.join(', ');
       });
   };
 
   $rootScope.signOut = function(){
-    console.log('SIGN OUT');
-    console.log($rootScope.user);
     $auth.signOut()
       .then(function(resp) {
-        console.log('SIGN OUT SUCCESS');
-        console.log(resp);
-        console.log($rootScope.user);
         $window.location.reload();
       })
       .catch(function(resp) {
         console.log('SIGN OUT FAILURE');
         console.log(resp);
-        console.log($rootScope.user);
       });
   };
 

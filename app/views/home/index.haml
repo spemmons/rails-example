@@ -17,7 +17,8 @@
       .col-lg-10
         %input.form-control(type='password' ng-model='credentials.password')
     .form-group
-      %button.col-lg-10.col-lg-offset-2 Please Sign-In
+      .col-lg-10.col-lg-offset-2
+        %button.btn.btn-primary Please Sign-In
     .alert.alert-danger(ng-show='errorMessage.length > 0') {{ errorMessage }}
   .container(ng-if='user.signedIn')
     Welcome to JogTime!

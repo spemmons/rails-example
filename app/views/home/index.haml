@@ -8,5 +8,19 @@
 .container
   .navbar.navbar-default &nbsp;
   %sign-in
-  .container(ng-if='user.signedIn')
-    Welcome to JogTime!
+  .container(ng-if='user.signedIn' ng-controller='HomeController')
+    .well
+      %edit-jog-time(jogtime='newtime' on-save='saveJogTime()' on-delete='deleteJogTime()')
+    %table.table.table-striped.table-hover(ng-if='jogtimes.length > 0')
+      %thead
+        %tr
+          %th Date
+          %th Duration
+          %th Distance
+          %th Ave. Speed
+      %tbody
+        %tr(ng-repeat='jogtime in jogtimes' ng-click='setJogTime(jogtime)' ng-class='{info: jogtime.id == newtime.id}')
+          %td {{ jogtime.date | date:'yyyy-MM-dd':'UTC' }}
+          %td {{ jogtime.duration / 60 / 60 | floor | number: 0 }}h {{ jogtime.duration / 60 % 60 | number: 0 }}m
+          %td {{ jogtime.distance * unitTypes[options.units] }} {{ options.units }}
+          %td {{ jogtime.distance * unitTypes[options.units] / jogtime.duration * 60 * 60 | number: 1 }} {{ options.units}}ph

@@ -1,7 +1,9 @@
 var app = angular.module('ToptalTest',[
   'ngRoute',
   'ngResource',
-  'ng-token-auth'
+  'ng-token-auth',
+  'ui.bootstrap',
+  'ui.bootstrap.datepicker'
 ]);
 
 app.config(['$locationProvider','$authProvider','$httpProvider',function($locationProvider,$authProvider,$httpProvider) {
@@ -11,6 +13,8 @@ app.config(['$locationProvider','$authProvider','$httpProvider',function($locati
   $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
 
 }]);
+
+app.filter('floor', function() { return function(input) { return Math.floor(input); }; });
 
 app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
   $auth.initialize();
@@ -43,5 +47,8 @@ app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
         console.log(resp);
       });
   };
+
+  $rootScope.unitTypes = {km: 1.0, mi: 1.60934};
+
 
 }]);

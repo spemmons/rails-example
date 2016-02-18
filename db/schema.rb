@@ -30,14 +30,14 @@ ActiveRecord::Schema.define(version: 20160214202454) do
 
   create_table "jog_times", force: :cascade do |t|
     t.integer  "user_id"
-    t.datetime "started_at"
-    t.datetime "stopped_at"
+    t.datetime "date"
+    t.integer  "duration"
     t.float    "distance"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_index "jog_times", ["user_id", "started_at"], name: "index_jog_times_on_user_id_and_started_at"
+  add_index "jog_times", ["user_id", "date"], name: "index_jog_times_on_user_id_and_date"
 
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "",      null: false

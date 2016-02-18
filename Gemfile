@@ -32,6 +32,7 @@ gem 'bitmask_attributes'
 gem 'devise'
 gem 'devise_token_auth',github: 'streamatica/devise_token_auth'
 gem 'cancan'
+gem 'httparty'
 
 group :development, :test do
   gem 'brakeman', require: false

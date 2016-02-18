@@ -14,21 +14,22 @@ app.directive('editJogTime', function() {
 
       $scope.fields = {};
       $scope.$watch('jogtime',function(newtime,oldtime){
+        if (newtime){
+          $scope.fields.id = newtime.id;
+          $scope.fields.date = newtime.date ? new Date(newtime.date) : undefined;
 
-        $scope.fields.id = newtime.id;
-        $scope.fields.date = newtime.date;
+          delete $scope.fields.hours;
+          delete $scope.fields.minutes;
+          if (newtime.duration && newtime.duration > 0){
+            var totalMinutes = Math.floor(newtime.duration / 60);
+            $scope.fields.hours = Math.floor(totalMinutes / 60);
+            $scope.fields.minutes = totalMinutes % 60;
+          }
 
-        delete $scope.fields.hours;
-        delete $scope.fields.minutes;
-        if (newtime.duration && newtime.duration > 0){
-          var totalMinutes = Math.floor(newtime.duration / 60);
-          $scope.fields.hours = Math.floor(totalMinutes / 60);
-          $scope.fields.minutes = totalMinutes % 60;
+          delete $scope.fields.distance;
+          if (newtime.distance && newtime.distance > 0)
+            $scope.fields.distance = newtime.distance / $rootScope.unitTypes[$scope.options.units];
         }
-
-        delete $scope.fields.distance;
-        if (newtime.distance && newtime.distance > 0)
-          $scope.fields.distance = newtime.distance / $rootScope.unitTypes[$scope.options.units];
       });
 
       $scope.submitFields = function(){

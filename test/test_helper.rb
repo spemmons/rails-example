@@ -7,4 +7,12 @@ class ActiveSupport::TestCase
   fixtures :all
 
   # Add more helper methods to be used by all tests here...
+
+  include Devise::TestHelpers
+  include ActiveJob::TestHelper
+  ActiveRecord::Migration.check_pending!
+
+  def set_authentication_headers_for(user)
+    @request.headers.merge!(user.create_new_auth_token)
+  end
 end

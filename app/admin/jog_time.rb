@@ -1,19 +1,19 @@
 ActiveAdmin.register JogTime do
-  permit_params :user_id, :started_at, :stopped_at, :distance
+  permit_params :user_id, :date, :duration, :distance
 
   index do
     selectable_column
     id_column
     column :user
-    column :started_at
-    column :stoppped_at
+    column :date
+    column :duration
     column :distance
-    column :speed
     actions
   end
 
   filter :user
-  filter :started_at
-  filter :stopped_at
+  filter :date
+  filter :duration
+  filter :distance
 
 end

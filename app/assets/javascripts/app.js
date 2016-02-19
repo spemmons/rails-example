@@ -27,13 +27,40 @@ app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
       $rootScope.user.signedOut = true;
     });
 
-  $rootScope.errorMessages = '';
+  $rootScope.signInError = '';
   $rootScope.signIn = function(credentials) {
     $auth.submitLogin(credentials)
       .catch(function(resp) {
         console.log('SIGN IN FAILURE');
         console.log(resp);
-        $rootScope.errorMessage = resp.errors.join(', ');
+        $rootScope.user.signedOut = true;
+        $rootScope.signInError = resp.errors.join(', ');
+      });
+  };
+
+  $rootScope.signUpError = '';
+  $rootScope.signUp = function(credentials) {
+    if (credentials.password !== credentials.password_confirmation) {
+      $rootScope.signUpError = 'Password and confirmation do not match';
+      return;
+    }
+
+    $auth.submitRegistration(credentials)
+      .then(function(result){
+        console.log('SIGN UP SUCCESS');
+        $auth.submitLogin(credentials)
+          .catch(function(resp) {
+            console.log('POST SIGN IN FAILURE');
+            console.log(resp);
+            $rootScope.user.signedOut = true;
+            $rootScope.signUpError = resp.errors.join(', ');
+          });
+      })
+      .catch(function(resp) {
+        console.log('SIGN UP FAILURE');
+        console.log(resp);
+        $rootScope.user.signedOut = true;
+        $rootScope.signUpError = _.isArray(resp.data.errors) ? resp.data.errors.join(', ') : resp.data.errors.full_messages.join(', ');
       });
   };
 

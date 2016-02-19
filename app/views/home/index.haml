@@ -7,8 +7,17 @@
         %a(ng-click='signOut()' ng-if='user.signedIn') Sign Out
 .container
   .navbar.navbar-default &nbsp;
-  %sign-in
+  .row(ng-if='user.signedOut && !user.signedIn')
+    .col-lg-5
+      %h3 Already have an account? Sign in now!
+      %sign-in
+    .col-lg-2
+      %h1.text-center - OR -
+    .col-lg-5
+      %h3 Want to get started? Register now!
+      %sign-up
   .container(ng-if='user.signedIn' ng-controller='HomeController')
+    %h1 Welcome, {{ user.email }}!
     .alert.alert-info(ng-if='newtime && jogtimes.length === 0')
       %strong Enter your first Jog Time below
     .well

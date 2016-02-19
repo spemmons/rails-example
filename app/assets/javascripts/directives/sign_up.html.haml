@@ -1,0 +1,17 @@
+%form.form-horizontal(ng-init='signUpFields = {}' ng-submit='signUp(signUpFields)')
+  .form-group
+    %label.col-lg-2 Email
+    .col-lg-10
+      %input.form-control(type='text' ng-model='signUpFields.email')
+  .form-group
+    %label.col-lg-2 Password
+    .col-lg-10
+      %input.form-control(type='password' ng-model='signUpFields.password' autocomplete='new-password')
+  .form-group
+    %label.col-lg-2 Confirm
+    .col-lg-10
+      %input.form-control(type='password' ng-model='signUpFields.password_confirmation')
+  .form-group
+    .col-lg-10.col-lg-offset-2
+      %button.btn.btn-primary Please Register
+  .alert.alert-danger(ng-show='signUpError.length > 0') {{ signUpError }}

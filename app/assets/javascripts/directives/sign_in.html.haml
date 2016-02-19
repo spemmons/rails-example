@@ -1,13 +1,13 @@
-%form.form-horizontal(ng-init='credentials = {}' ng-submit='signIn(credentials)' ng-if='user.signedOut && !user.signedIn')
+%form.form-horizontal(ng-init='signInFields = {}' ng-submit='signIn(signInFields)')
   .form-group
     %label.col-lg-2 Email
     .col-lg-10
-      %input.form-control(type='text' ng-model='credentials.email')
+      %input.form-control(type='text' ng-model='signInFields.email')
   .form-group
     %label.col-lg-2 Password
     .col-lg-10
-      %input.form-control(type='password' ng-model='credentials.password')
+      %input.form-control(type='password' ng-model='signInFields.password')
   .form-group
     .col-lg-10.col-lg-offset-2
       %button.btn.btn-primary Please Sign-In
-  .alert.alert-danger(ng-show='errorMessage.length > 0') {{ errorMessage }}
+  .alert.alert-danger(ng-show='signInError.length > 0') {{ signInError }}

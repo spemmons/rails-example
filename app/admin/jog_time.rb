@@ -8,6 +8,7 @@ ActiveAdmin.register JogTime do
     column :date
     column :duration
     column :distance
+    column :speed
     actions
   end
 

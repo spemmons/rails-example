@@ -35,7 +35,7 @@
             %li.dropdown
               %a.dropdown-toggle(data-toggle='dropdown' role='button' aria-expanded='false') {{ options.maxTimes }}
               %ul.dropdown-menu(role='menu')
-                %li(ng-repeat='count in [10,20,30,40,50,100]')
+                %li(ng-repeat='count in ["all",10,20,30,40,50,100]')
                   %a(ng-click='setMaxTimesOption(count)') {{ count }}
       %table.table.table-striped.table-hover
         %thead
@@ -49,7 +49,7 @@
             %td {{ jogtime.date | date:'yyyy-MM-dd':'UTC' }}
             %td {{ jogtime.duration / 60 / 60 | floor | number: 0 }}h {{ jogtime.duration / 60 % 60 | number: 0 }}m
             %td {{ jogtime.distance * unitTypes[options.units] }} {{ options.units }}
-            %td {{ jogtime.distance * unitTypes[options.units] / jogtime.duration * 60 * 60 | number: 1 }} {{ options.units }}ph
+            %td {{ jogtime.speed * unitTypes[options.units] * 60 * 60 | number: 1 }} {{ options.units }}ph
       %form.form-horizontal
         %fieldset
           .form-group

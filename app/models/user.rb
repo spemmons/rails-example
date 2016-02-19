@@ -1,6 +1,6 @@
 class User < ActiveRecord::Base
 
-  has_many :jog_times
+  has_many :jog_times,dependent: :delete_all
 
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable

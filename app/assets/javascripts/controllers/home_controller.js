@@ -70,6 +70,12 @@ app.controller('HomeController',['$scope','$rootScope','$http',function($scope,$
   };
 
   function updateState(jogtimes){
+    _.each(jogtimes,function(value){
+      try {
+        value.speed = value.distance / value.duration;
+      } catch(err) {
+      }
+    });
     $scope.jogtimes = _.sortBy(jogtimes,$scope.options.sort).reverse();
     $scope.newtime = {};
   }

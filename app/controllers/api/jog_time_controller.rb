@@ -4,7 +4,12 @@ class Api::JogTimeController < ApiController
   before_action :set_jog_time,except: [:index,:create]
 
   def index
-    render inline: @user.jog_times.to_a.to_json
+    scope = @user.jog_times
+    scope = scope.limit(params[:limit]) if params[:limit] and params[:limit].to_i > 0
+    scope = scope_by_sort(scope,params[:sort])
+    scope = scope_by_date_range(scope,params[:from],params[:to])
+
+    render inline: scope.to_a.to_json
   end
 
   def show
@@ -37,6 +42,23 @@ protected
 
   def valid_params
     params.require(:jog_time).permit(:date,:duration,:distance)
+  end
+
+  def scope_by_sort(scope,sort)
+    case sort
+      when nil     then scope
+      when 'speed' then scope.order('(distance/duration) desc')
+      else              scope.order("#{sort} desc")
+    end
+  end
+
+  def scope_by_date_range(scope,from,to)
+    return scope unless from and to
+
+    scope.where('date between ? and ?',from,to)
+
+  rescue
+    scope
   end
 
 end

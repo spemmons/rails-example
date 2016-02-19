@@ -50,7 +50,7 @@ app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
         console.log('SIGN UP SUCCESS');
         $auth.submitLogin(credentials)
           .catch(function(resp) {
-            console.log('POST SIGN IN FAILURE');
+            console.log('POST SIGN UP FAILURE');
             console.log(resp);
             $rootScope.user.signedOut = true;
             $rootScope.signUpError = resp.errors.join(', ');

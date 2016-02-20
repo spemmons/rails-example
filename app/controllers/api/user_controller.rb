@@ -25,18 +25,24 @@ class Api::UserController < ApiController
   def update
     return missing_user unless @user
 
+    params[:user].delete(:roles) if @user == current_user and params[:user] # cannot change your own role
+
     if @user.update_attributes(valid_params)
-      render inline: user.to_json
+      render inline: @user.to_json
     else
-      render(status: :unprocessable_entity,json: user.errors.to_a)
+      render(status: :unprocessable_entity,json: @user.errors.to_a)
     end
   end
 
   def destroy
     return missing_user unless @user
 
-    @user.delete if @user
-    render inline: @user.to_json
+    if @user == current_user
+      render(status: :unprocessable_entity,json: ['User cannot delete self'])
+    else
+      @user.delete
+      render inline: @user.to_json
+    end
   end
 
 protected

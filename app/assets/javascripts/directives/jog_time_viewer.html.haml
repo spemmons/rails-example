@@ -1,14 +1,12 @@
 .alert.alert-info(ng-if='newtime && jogtimes.length === 0')
   %strong Enter your first Jog Time below
 .well
-  %edit-jog-time(jogtime='newtime' on-save='saveJogTime' on-delete='deleteJogTime')
+  %edit-jog-time(jogtime='newtime' errors='jogTimeErrors' on-save='saveJogTime' on-delete='deleteJogTime')
 %div(ng-if='jogtimes.length > 0')
   %nav.navbar.navbar-inverse
     .container-fluid
       .navbar-header
-        %ul.nav.navbar-nav
-          %li(ng-repeat='option in sortOptions' ng-class='{active: options.sort === option}')
-            %a.navbar-brand(href='#' ng-click='setSortOption(option)') {{ sortLabels[option] }}
+      .navbar-brand Manage Jog Times
       %ul.nav.navbar-nav.navbar-right
         %li
           %span.navbar-brand Max Shown:
@@ -20,12 +18,9 @@
   %table.table.table-striped.table-hover
     %thead
       %tr
-        %th Date
-        %th Duration
-        %th Distance
-        %th Ave. Speed
+        %th(ng-repeat='(column,label) in sortColumns' ng-class='{"alert-info": options.sort == column}' ng-click='setSortOption(column)') {{ label }}
     %tbody
-      %tr(ng-repeat='jogtime in jogtimes' ng-click='toggleJogTime(jogtime)' ng-class='{info: jogtime.id == newtime.id}')
+      %tr(ng-repeat='jogtime in jogtimes' ng-click='toggleJogTime(jogtime)' ng-class='{info: jogtime.id == newtime.id,success: jogtime.id == lasttime.id}')
         %td {{ jogtime.date | date:'yyyy-MM-dd':'UTC' }}
         %td {{ jogtime.duration / 60 / 60 | floor | number: 0 }}h {{ jogtime.duration / 60 % 60 | number: 0 }}m
         %td {{ jogtime.distance * unitTypes[options.units] }} {{ options.units }}

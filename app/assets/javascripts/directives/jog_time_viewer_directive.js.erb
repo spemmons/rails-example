@@ -4,10 +4,15 @@ app.directive('jogTimeViewer', function() {
       return <%= "'#{ asset_path('directives/jog_time_viewer.html') }'" %>;
     },
     controller: ['$scope','$rootScope','$http',function($scope,$rootScope,$http) {
-      $scope.sortOptions = ['date','duration','distance','speed'];
-      $scope.sortLabels = {date: 'Most Recent',duration: 'Longest Times',distance: 'Farthest Distances',speed: 'Fastest Speeds'}
-      $scope.options = {units: 'km',dates: 'all',maxTimes: 10};
+      $scope.sortColumns = {date: 'Date',duration: 'Duration',distance: 'Distance',speed: 'Ave. Speed'};
+      $scope.options = {sort: 'date',units: 'km',dates: 'all',maxTimes: 10};
       $scope.jogtimes = [];
+      $scope.lasttime = {};
+      $scope.jogTimeErrors = [];
+
+      $rootScope.$watch('currentUser',function(){
+        $scope.requestJogTimes();
+      });
 
       $scope.setDatesOption = function(value){
         if (value === $scope.options.dates) return;
@@ -32,6 +37,8 @@ app.directive('jogTimeViewer', function() {
       };
 
       $scope.toggleJogTime = function(jogtime){
+        $scope.lasttime = {};
+        setJogTimeErrors([]);
         if (jogtime === $scope.oldtime) {
           delete $scope.oldtime;
           $scope.newtime = {};
@@ -42,29 +49,39 @@ app.directive('jogTimeViewer', function() {
       };
 
       $scope.saveJogTime = function(){
+        $scope.lasttime = {};
         if ($scope.oldtime) {
-          $http.patch('/api/jog_time/' + $scope.oldtime.id,{jog_time: {date: $scope.newtime.date,duration: $scope.newtime.duration,distance: $scope.newtime.distance}}).success(function (result){
-            $scope.oldtime.date = result.date;
-            $scope.oldtime.duration = result.duration;
-            $scope.oldtime.distance = result.distance;
-            delete $scope.oldtime;
-            updateState($scope.jogtimes);
-          });
+          $http.patch(jogTimeURL() + '/' + $scope.oldtime.id,{jog_time: {date: $scope.newtime.date,duration: $scope.newtime.duration,distance: $scope.newtime.distance}})
+              .success(function (result){
+                $scope.oldtime.date = result.date;
+                $scope.oldtime.duration = result.duration;
+                $scope.oldtime.distance = result.distance;
+                $scope.lasttime = $scope.oldtime;
+                updateState($scope.jogtimes);
+              })
+              .error(setJogTimeErrors);
         } else {
-          $http.post('/api/jog_time',{jog_time: {date: $scope.newtime.date,duration: $scope.newtime.duration,distance: $scope.newtime.distance}}).success(function(result){
-            $scope.jogtimes.push(result);
-            updateState($scope.jogtimes);
-          });
+          $http.post(jogTimeURL(),{jog_time: {date: $scope.newtime.date,duration: $scope.newtime.duration,distance: $scope.newtime.distance}})
+              .success(function(result){
+                $scope.lasttime = result;
+                $scope.jogtimes.push(result);
+                updateState($scope.jogtimes);
+              })
+              .error(setJogTimeErrors);
         }
       };
 
       $scope.deleteJogTime = function(){
+        $scope.lasttime = {};
         if ($scope.oldtime) {
-          $http.delete('/api/jog_time/' + $scope.oldtime.id).success(function(result){
-            $scope.jogtimes = _.without($scope.jogtimes,$scope.oldtime);
-            $scope.newtime = {};
-            delete $scope.oldtime;
-          });
+          $http.delete(jogTimeURL() + '/' + $scope.oldtime.id)
+              .success(function(result){
+                $scope.jogtimes = _.without($scope.jogtimes,$scope.oldtime);
+                $scope.newtime = {};
+                delete $scope.oldtime;
+                setJogTimeErrors([]);
+              })
+              .error(setJogTimeErrors);
         }
       };
 
@@ -73,13 +90,14 @@ app.directive('jogTimeViewer', function() {
       };
 
       $scope.requestJogTimes = function(){
-        var url = '/api/jog_time?sort=' + $scope.options.sort + '&limit=' + $scope.options.maxTimes;
+        var url = jogTimeURL() + '?sort=' + $scope.options.sort + '&limit=' + $scope.options.maxTimes;
         if ($scope.validDateRange())
           url += '&from=' + $scope.options.fromDate.toISOString() + '&to=' + $scope.options.toDate.toISOString();
         $http.get(url).success(updateState);
       };
 
       function updateState(jogtimes){
+        setJogTimeErrors([]);
         _.each(jogtimes,function(value){
           try {
             value.speed = value.distance / value.duration;
@@ -88,9 +106,16 @@ app.directive('jogTimeViewer', function() {
         });
         $scope.jogtimes = _.sortBy(jogtimes,$scope.options.sort).reverse();
         $scope.newtime = {};
+        delete $scope.oldtime;
       }
 
-      $scope.setSortOption('date');
+      function jogTimeURL(){
+        return $rootScope.user.id == $rootScope.currentUser.id ? '/api/jog_time' : '/api/user/' + $rootScope.currentUser.id + '/jog_time';
+      }
+
+      function setJogTimeErrors(errors){
+        $scope.jogTimeErrors = errors;
+      }
     }]
   };
 });

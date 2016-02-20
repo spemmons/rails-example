@@ -17,3 +17,4 @@
         %button.btn.btn-sm.btn-primary(ng-click='submitFields()' ng-disabled='!jogtime') {{ fields.id ? 'Update' : 'Add' }}
       .col-lg-1
         %button.btn.btn-sm.btn-danger(ng-if='fields.id' ng-click='onDelete()()' ng-disabled='!jogtime') Delete
+  .alert.alert-danger(ng-show='errorMessage.length > 0') {{ errorMessage }}

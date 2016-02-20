@@ -14,20 +14,34 @@ class Api::JogTimeController < ApiController
   end
 
   def show
+    return missing_jog_time unless @jog_time
+
     render inline: @jog_time.to_json
   end
 
   def create
-    render inline: @user.jog_times.create(valid_params).to_json
+    jog_time = @user.jog_times.create(valid_params)
+    if jog_time.errors.any?
+      render(status: :unprocessable_entity,json: jog_time.errors.to_a)
+    else
+      render inline: jog_time.to_json
+    end
   end
 
   def update
-    @jog_time.update_attributes(valid_params) if @jog_time
-    render inline: @jog_time.to_json
+    return missing_jog_time unless @jog_time
+
+    if @jog_time.update_attributes(valid_params)
+      render inline: @jog_time.to_json
+    else
+      render(status: :unprocessable_entity,json: @jog_time.errors.to_a)
+    end
   end
 
   def destroy
-    @jog_time.delete if @jog_time
+    return missing_jog_time unless @jog_time
+
+    @jog_time.delete
     render inline: @jog_time.to_json
   end
 
@@ -44,6 +58,10 @@ protected
 
   def set_jog_time
     @jog_time = @user.jog_times.find_by_id(params[:id])
+  end
+
+  def missing_jog_time
+    render(status: :unprocessable_entity,json: ['No jog time given'])
   end
 
   def valid_params

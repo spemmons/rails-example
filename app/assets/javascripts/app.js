@@ -23,6 +23,7 @@ app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
   $auth.validateUser().then(
     function(user){
       $rootScope.user.signedOut = false;
+      $rootScope.currentUser = $rootScope.user;
     },
     function(result){
       $rootScope.user.signedOut = true;
@@ -31,6 +32,9 @@ app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
   $rootScope.signInError = '';
   $rootScope.signIn = function(credentials) {
     $auth.submitLogin(credentials)
+      .then(function(resp){
+        $rootScope.currentUser = $rootScope.user;
+      })
       .catch(function(resp) {
         console.log('SIGN IN FAILURE');
         console.log(resp);
@@ -50,6 +54,9 @@ app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
       .then(function(result){
         console.log('SIGN UP SUCCESS');
         $auth.submitLogin(credentials)
+          .then(function(resp){
+            $rootScope.currentUser = $rootScope.user;
+          })
           .catch(function(resp) {
             console.log('POST SIGN UP FAILURE');
             console.log(resp);

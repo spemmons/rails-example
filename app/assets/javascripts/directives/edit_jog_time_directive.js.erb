@@ -5,6 +5,7 @@ app.directive('editJogTime', function() {
     },
     scope: {
       jogtime: '=jogtime',
+      errors: '=errors',
       options: '=?options',
       onSave: '&',
       onDelete: '&'
@@ -12,8 +13,14 @@ app.directive('editJogTime', function() {
     controller: ['$scope','$rootScope',function($scope,$rootScope) {
       if (!$scope.options) $scope.options = {units: 'km'};
 
+      $scope.errorMessage = '';
+      $scope.$watch('errors',function(errors){
+        $scope.errorMessage = errors && errors.length > 0 ? errors.join(', ') : '';
+      });
+
       $scope.fields = {};
       $scope.$watch('jogtime',function(newtime,oldtime){
+        $scope.errorMessage = '';
         if (newtime){
           $scope.fields.id = newtime.id;
           $scope.fields.date = newtime.date ? new Date(newtime.date) : undefined;
@@ -41,6 +48,7 @@ app.directive('editJogTime', function() {
 
         $scope.jogtime.distance = $scope.fields.distance * $rootScope.unitTypes[$scope.options.units];
 
+        $scope.errorMessage = '';
         $scope.onSave()();
       };
     }]

@@ -9,6 +9,9 @@
       %ul.nav.navbar-nav.navbar-right(ng-repeat='state in stateTypes' ng-if='user.signedIn && user.roles.length > 0')
         %li(ng-class='{active: currentState == state}')
           %a(ng-click='setHomeState(state)') {{ stateLabels[state] }}
+      %ul.nav.navbar-nav.navbar-right(ng-if='user.signedIn && user.roles.length > 0')
+        %li(ng-class='{active: currentState == "users"}')
+          %a(ng-click='setHomeState("users")') Users
   .container
     .navbar.navbar-default &nbsp;
     .row(ng-if='user.signedOut && !user.signedIn')
@@ -21,6 +24,9 @@
         %h3 Want to get started? Register now!
         %sign-up
     .container(ng-if='user.signedIn')
-      %h1 Welcome, {{ user.email }}!
+      %h1
+        %span(ng-class='{"alert-danger": user.id != currentUser.id}') {{ user.id == currentUser.id ? 'Welcome, ' : 'Impersonating: '}}
+        %span {{ currentUser.email }}!
       %jog-time-viewer(ng-show='currentState == "jogtimes"')
-      %user-list(ng-show='currentState == "users"' impersonate='impersonateUser')
+      %div(ng-show='currentState == "weeks"') WEEKS!
+      %user-list(ng-show='currentState == "users"' impersonate='impersonateUser' ng-if='user.roles.length > 0')

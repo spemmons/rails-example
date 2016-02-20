@@ -3,7 +3,7 @@
 %nav.navbar.navbar-inverse
   .container-fluid
     .navbar-header
-      .navbar-brand User Management
+      .navbar-brand Manage Users
     %ul.nav.navbar-nav.navbar-right
       %li
         %span.navbar-brand Search:
@@ -19,7 +19,7 @@
       %th Last Seen
       %th Sign In Count
   %tbody
-    %tr(ng-repeat='entry in users' ng-click='toggleTargetUser(entry)' ng-class='{info: entry.id == targetUser.id}')
+    %tr(ng-repeat='entry in users' ng-click='toggleTargetUser(entry)' ng-class='{info: entry.id == targetUser.id,success: entry.id == lastUser.id}')
       %td {{ entry.email }}
       %td {{ entry.roles.length > 0 ? roleLabels[entry.roles[0]] : 'Regular' }}
       %td {{ entry.created_at | date:'yyyy-MM-dd'}}
@@ -28,4 +28,5 @@
       %td {{ entry.sign_in_count }}
       %td
         .form-group.form-group-sm.right(ng-if='user.roles[0] == "admin"')
-          %button.btn.btn-default.btn-sm(ng-click='impersonateUser(entry)') Impersonate
+          %strong(ng-if='entry.id === currentUser.id') <-- Log Times for...
+          %button.btn.btn-default.btn-sm(ng-click='impersonateUser(entry)'ng-if='entry.id != currentUser.id') Impersonate

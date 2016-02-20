@@ -1,6 +1,10 @@
 class JogTime < ActiveRecord::Base
   belongs_to :user
 
+  validates :user_id,:date,presence: {message: 'invalid'}
+
+  validates :distance,:duration,numericality: {greater_than: 0}
+
   def speed
     (distance / duration).round(4) rescue nil
   end

@@ -41,7 +41,7 @@ app.directive('editJogTime', function() {
 
         $scope.jogtime.distance = $scope.fields.distance * $rootScope.unitTypes[$scope.options.units];
 
-        $scope.onSave();
+        $scope.onSave()();
       };
     }]
   };

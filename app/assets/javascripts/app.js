@@ -17,6 +17,7 @@ app.config(['$locationProvider','$authProvider','$httpProvider',function($locati
 app.filter('floor', function() { return function(input) { return Math.floor(input); }; });
 
 app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
+
   $auth.initialize();
 
   $auth.validateUser().then(

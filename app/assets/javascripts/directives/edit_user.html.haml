@@ -1,0 +1,22 @@
+%form.form-horizontal
+  .form-group.form-group-sm
+    %label.col-lg-1 Email
+    .col-lg-3
+      %input.form-control(type='text' ng-model='fields.email' ng-disabled='fields.id')
+    %label.col-lg-1 Role
+    .col-lg-3
+      %select.form-control(ng-model='fields.role' ng-options='role.value as role.label for role in roleOptions')
+        %option(value='') Regular
+    .col-lg-1
+      %button.btn.btn-sm.btn-primary(ng-click='submitFields()' ng-disabled='!target') {{ fields.id ? 'Update' : 'Add' }}
+    .col-lg-1
+      %button.btn.btn-sm.btn-danger(ng-if='fields.id' ng-click='onDelete()(fields)' ng-disabled='!target') Delete
+  .form-group.form-group-sm
+    %label.col-lg-1 Password
+    .col-lg-3
+      %input.form-control(type='password' ng-model='fields.password' autocomplete='new-password')
+    %label.col-lg-1 Confirm
+    .col-lg-3
+      %input.form-control(type='password' ng-model='fields.password_confirmation')
+    %label.col-lg-4 <-- May leave blank
+  .alert.alert-danger(ng-show='errorMessage.length > 0') {{ errorMessage }}

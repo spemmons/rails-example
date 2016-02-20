@@ -1,0 +1,31 @@
+.well
+  %edit-user(target='targetUser' errors='userErrors' on-save='saveUser' on-delete='deleteUser')
+%nav.navbar.navbar-inverse
+  .container-fluid
+    .navbar-header
+      .navbar-brand User Management
+    %ul.nav.navbar-nav.navbar-right
+      %li
+        %span.navbar-brand Search:
+      %li
+        .form-group
+          %input.form-control.input-sm(type='text' placeholder='Email pattern')
+%table.table.table-striped.table-hover
+  %thead
+    %tr
+      %th Email
+      %th Role
+      %th Created
+      %th Last Seen
+      %th Sign In Count
+  %tbody
+    %tr(ng-repeat='entry in users' ng-click='toggleTargetUser(entry)' ng-class='{info: entry.id == targetUser.id}')
+      %td {{ entry.email }}
+      %td {{ entry.roles.length > 0 ? roleLabels[entry.roles[0]] : 'Regular' }}
+      %td {{ entry.created_at | date:'yyyy-MM-dd'}}
+      %td(ng-if='!entry.current_sign_in_at') No Yet Seen
+      %td(ng-if='entry.current_sign_in_at') {{ entry.current_sign_in_at | date:'yyyy-MM-dd'}}
+      %td {{ entry.sign_in_count }}
+      %td
+        .form-group.form-group-sm.right(ng-if='user.roles[0] == "admin"')
+          %button.btn.btn-default.btn-sm(ng-click='impersonateUser(entry)') Impersonate

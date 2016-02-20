@@ -8,19 +8,33 @@ class Api::UserController < ApiController
   end
 
   def show
+    return missing_user unless @user
+
     render inline: @user.to_json
   end
 
   def create
-    render inline: User.create(valid_params).to_json
+    user = User.create(valid_params)
+    if user.errors.any?
+      render(status: :unprocessable_entity,json: user.errors.to_a)
+    else
+      render inline: user.to_json
+    end
   end
 
   def update
-    @user.update_attributes(valid_params) if @user
-    render inline: @user.to_json
+    return missing_user unless @user
+
+    if @user.update_attributes(valid_params)
+      render inline: user.to_json
+    else
+      render(status: :unprocessable_entity,json: user.errors.to_a)
+    end
   end
 
   def destroy
+    return missing_user unless @user
+
     @user.delete if @user
     render inline: @user.to_json
   end
@@ -33,6 +47,10 @@ protected
 
   def set_user
     @user = User.find_by_id(params[:id])
+  end
+
+  def missing_user
+    render(status: :unprocessable_entity,json: ['No user given'])
   end
 
   def valid_params

@@ -1,0 +1,70 @@
+app.directive('userList', function() {
+  return {
+    templateUrl: function(elem, attr) {
+      return <%= "'#{ asset_path('directives/user_list.html') }'" %>;
+    },
+    controller: ['$scope','$rootScope','$http',function($scope,$rootScope,$http) {
+      $scope.roleLabels = {regular: 'Regular',manager: 'Manager',admin: 'Admin'}
+
+      $scope.users = [];
+      $scope.userErrors = [];
+      $scope.targetUser = {roles: []};
+
+      $http.get('/api/user').success(function(result){
+        $scope.users = result;
+      });
+
+      $scope.toggleTargetUser = function(target){
+        console.log('TOGGLE');
+        console.log(target);
+        $scope.targetUser = $scope.targetUser === target ? {roles: []} : target;
+      };
+
+      $scope.saveUser = function(fields){
+        if (fields.id !== $scope.targetUser.id)
+          $scope.userErrors = ['Target user does not match'];
+        else if (fields.id) {
+          $http.patch('/api/user/' + fields.id,{user: fields})
+              .success(function (result){
+                $scope.userErrors = [];
+//                updateState($scope.users);
+              })
+              .error(function(result){
+                console.log('ERROR');
+                console.log(result);
+                $scope.userErrors = result;
+              });
+        } else {
+          $http.post('/api/user',{user: fields})
+              .success(function(result){
+                $scope.users.push(result);
+                $scope.userErrors = [];
+//                updateState($scope.users);
+              })
+              .error(function(result){
+                console.log('ERROR');
+                console.log(result);
+                $scope.userErrors = result;
+              });
+        }
+      };
+
+      $scope.deleteUser = function(fields){
+        if (fields.id !== $scope.targetUser.id)
+          $scope.userErrors = ['Target user does not match'];
+        else {
+          $http.delete('/api/user/' + fields.id)
+              .success(function(result){
+                $scope.users = _.without($scope.users,$scope.targetUser);
+                $scope.targetUser = {roles: []};
+              })
+              .error(function(result){
+                console.log('ERROR');
+                console.log(result);
+                $scope.userErrors = result;
+              });
+        }
+      }
+    }]
+  };
+});

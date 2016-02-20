@@ -1,68 +1,26 @@
-.navbar.navbar-default.navbar-fixed-top
+.container(ng-controller='HomeController')
+  .navbar.navbar-default.navbar-fixed-top
+    .container
+      .navbar-header
+        .navbar-brand TopTal Test App
+      %ul.nav.navbar-nav.navbar-right
+        %li
+          %a(ng-click='signOut()' ng-if='user.signedIn') Sign Out
+      %ul.nav.navbar-nav.navbar-right(ng-repeat='state in stateTypes' ng-if='user.signedIn && user.roles.length > 0')
+        %li(ng-class='{active: currentState == state}')
+          %a(ng-click='setHomeState(state)') {{ stateLabels[state] }}
   .container
-    .navbar-header
-      .navbar-brand TopTal Test App
-    %ul.nav.navbar-nav.navbar-right
-      %li
-        %a(ng-click='signOut()' ng-if='user.signedIn') Sign Out
-.container
-  .navbar.navbar-default &nbsp;
-  .row(ng-if='user.signedOut && !user.signedIn')
-    .col-lg-5
-      %h3 Already have an account? Sign in now!
-      %sign-in
-    .col-lg-2
-      %h1.text-center - OR -
-    .col-lg-5
-      %h3 Want to get started? Register now!
-      %sign-up
-  .container(ng-if='user.signedIn' ng-controller='HomeController')
-    %h1 Welcome, {{ user.email }}!
-    .alert.alert-info(ng-if='newtime && jogtimes.length === 0')
-      %strong Enter your first Jog Time below
-    .well
-      %edit-jog-time(jogtime='newtime' on-save='saveJogTime()' on-delete='deleteJogTime()')
-    %div(ng-if='jogtimes.length > 0')
-      %nav.navbar.navbar-inverse
-        .container-fluid
-          .navbar-header
-            %ul.nav.navbar-nav
-              %li(ng-repeat='option in sortOptions' ng-class='{active: options.sort === option}')
-                %a.navbar-brand(href='#' ng-click='setSortOption(option)') {{ sortLabels[option] }}
-          %ul.nav.navbar-nav.navbar-right
-            %li
-              %span.navbar-brand Max Jog Times:
-            %li.dropdown
-              %a.dropdown-toggle(data-toggle='dropdown' role='button' aria-expanded='false') {{ options.maxTimes }}
-              %ul.dropdown-menu(role='menu')
-                %li(ng-repeat='count in ["all",10,20,30,40,50,100]')
-                  %a(ng-click='setMaxTimesOption(count)') {{ count }}
-      %table.table.table-striped.table-hover
-        %thead
-          %tr
-            %th Date
-            %th Duration
-            %th Distance
-            %th Ave. Speed
-        %tbody
-          %tr(ng-repeat='jogtime in jogtimes' ng-click='setJogTime(jogtime)' ng-class='{info: jogtime.id == newtime.id}')
-            %td {{ jogtime.date | date:'yyyy-MM-dd':'UTC' }}
-            %td {{ jogtime.duration / 60 / 60 | floor | number: 0 }}h {{ jogtime.duration / 60 % 60 | number: 0 }}m
-            %td {{ jogtime.distance * unitTypes[options.units] }} {{ options.units }}
-            %td {{ jogtime.speed * unitTypes[options.units] * 60 * 60 | number: 1 }} {{ options.units }}ph
-      %form.form-horizontal
-        %fieldset
-          .form-group
-            .btn-toolbar.col-lg-3
-              .btn-group.btn-group-sm
-                %a.btn.btn-default.btn-sm(ng-class='{active: options.dates === "all"}' ng-click='setDatesOption("all")') All Jog Times
-                %a.btn.btn-default.btn-sm(ng-class='{active: options.dates === "range"}' ng-click='setDatesOption("range")') Date Range
-            %div(ng-if='options.dates == "range"')
-              .col-lg-1 From:
-              .col-lg-2
-                %std-date-picker(date='options.fromDate')
-              .col-lg-1 To:
-              .col-lg-2
-                %std-date-picker(date='options.toDate')
-              .col-lg-1
-                %button.btn.btn-sm.btn-primary(ng-click='requestJogTimes()' ng-disabled='!validDateRange()') Refresh
+    .navbar.navbar-default &nbsp;
+    .row(ng-if='user.signedOut && !user.signedIn')
+      .col-lg-5
+        %h3 Already have an account? Sign in now!
+        %sign-in
+      .col-lg-2
+        %h1.text-center - OR -
+      .col-lg-5
+        %h3 Want to get started? Register now!
+        %sign-up
+    .container(ng-if='user.signedIn')
+      %h1 Welcome, {{ user.email }}!
+      %jog-time-viewer(ng-show='currentState == "jogtimes"')
+      %user-list(ng-show='currentState == "users"' impersonate='impersonateUser')

@@ -10,7 +10,7 @@ class Api::JogTimeController < ApiController
     scope = scope_by_sort(scope,params[:sort])
     scope = scope_by_date_range(scope,params[:from],params[:to])
 
-    render inline: scope.to_a.to_json
+    render inline: scope.all.to_a.to_json
   end
 
   def show
@@ -65,7 +65,7 @@ protected
   end
 
   def valid_params
-    params.require(:jog_time).permit(:date,:duration,:distance)
+    params.require(:jog_time).permit(:date,:duration,:distance) rescue {}
   end
 
   def scope_by_sort(scope,sort)
@@ -80,9 +80,6 @@ protected
     return scope unless from and to
 
     scope.where('date between ? and ?',from,to)
-
-  rescue
-    scope
   end
 
 end

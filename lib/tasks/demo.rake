@@ -14,8 +14,7 @@ task load_demo_date: :environment do
   lines.each do |line|
     tuple = line.split("\t")
     users.each_with_index do |user,offset|
-
-      puts user.jog_times.create!(date: date,duration: tuple[offset * 2].to_i * 60,distance: tuple[offset * 2 + 1]).attributes
+      user.jog_times.create(date: date,duration: tuple[offset * 2].to_i * 60,distance: tuple[offset * 2 + 1])
     end
     date += 1.day
   end

@@ -24,7 +24,7 @@
       %td {{ entry.roles.length > 0 ? roleLabels[entry.roles[0]] : 'Regular' }}
       %td {{ entry.created_at | date:'yyyy-MM-dd'}}
       %td(ng-if='!entry.current_sign_in_at') No Yet Seen
-      %td(ng-if='entry.current_sign_in_at') {{ entry.current_sign_in_at | date:'yyyy-MM-dd'}}
+      %td(ng-if='entry.current_sign_in_at') {{ entry.current_sign_in_at | date:'yyyy-MM-dd' }}
       %td {{ entry.sign_in_count }}
       %td
         .form-group.form-group-sm.right(ng-if='user.roles[0] == "admin"')

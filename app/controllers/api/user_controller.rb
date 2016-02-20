@@ -60,7 +60,7 @@ protected
   end
 
   def valid_params
-    params.require(:user).permit(:email,:password,:roles)
+    params.require(:user).permit(:email,:password,:roles) rescue {}
   end
 
 end

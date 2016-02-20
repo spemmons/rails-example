@@ -72,31 +72,31 @@ class Api::JogTimeControllerTest < ActionController::TestCase
           assert_equal '[]',response.body
         end
 
-        should 'return a null response on show' do
+        should 'return an error response on show' do
           get :show,id: 1
-          assert_response :success
-          assert_equal 'null',response.body
+          assert_response :unprocessable_entity
+          assert_equal '["No jog time given"]',response.body
         end
 
-        should 'return a new jog_time on create' do
-          assert_difference 'JogTime.count' do
-            get :create,jog_time: {date: Time.zone.local(2016,1,1),duration: 10,distance: 1}
-            assert_response :success
-            assert_equal '{"id":1,"user_id":1,"date":"2016-01-01T00:00:00.000Z","duration":10,"distance":1.0}',response.body
+        should 'return an error on create without attributes' do
+          assert_no_difference 'JogTime.count' do
+            get :create
+            assert_response :unprocessable_entity
+            assert_equal '["Date invalid","Distance is not a number","Duration is not a number"]',response.body
           end
         end
 
-        should 'return a null response on update' do
+        should 'return an error response on update' do
           get :update,id: 1,jog_time: {date: Time.zone.local(2016,1,1),duration: 10,distance: 1}
-          assert_response :success
-          assert_equal 'null',response.body
+          assert_response :unprocessable_entity
+          assert_equal '["No jog time given"]',response.body
         end
 
-        should 'return a null response on destroy' do
+        should 'return an error response on destroy' do
           assert_no_difference 'JogTime.count' do
             get :destroy,id: 1
-            assert_response :success
-            assert_equal 'null',response.body
+            assert_response :unprocessable_entity
+            assert_equal '["No jog time given"]',response.body
           end
         end
 
@@ -104,21 +104,57 @@ class Api::JogTimeControllerTest < ActionController::TestCase
 
       context 'with several existing job_times' do
         setup do
-          @jogtime1 = @user.jog_times.create!(date: Time.zone.local(2016,1,1),duration: 10,distance: 1)
-          @jogtime2 = @user.jog_times.create!(date: Time.zone.local(2016,1,2),duration: 20,distance: 2)
-          @jogtime3 = @user.jog_times.create!(date: Time.zone.local(2016,1,3),duration: 30,distance: 3)
+          @jogtime1 = @user.jog_times.create!(date: Time.zone.local(2016,1,1),duration: 30,distance: 1)
+          @jogtime2 = @user.jog_times.create!(date: Time.zone.local(2016,1,2),duration: 20,distance: 3)
+          @jogtime3 = @user.jog_times.create!(date: Time.zone.local(2016,1,3),duration: 10,distance: 2)
         end
 
-        should 'return an array of all elements on index' do
+        should 'return an array of all elements on index with no filters' do
           get :index
           assert_response :success
-          assert_equal %([{"id":1,"user_id":1,"date":"2016-01-01T00:00:00.000Z","duration":10,"distance":1.0},{"id":2,"user_id":1,"date":"2016-01-02T00:00:00.000Z","duration":20,"distance":2.0},{"id":3,"user_id":1,"date":"2016-01-03T00:00:00.000Z","duration":30,"distance":3.0}]),response.body
+          assert_equal [@jogtime1.as_json,@jogtime2.as_json,@jogtime3.as_json].to_json,response.body
+        end
+
+        should 'return an array of 2 with a date range skipping the first' do
+          get :index,from: @jogtime2.date,to: @jogtime3.date + 1.day
+          assert_response :success
+          assert_equal [@jogtime2.as_json,@jogtime3.as_json].to_json,response.body
+        end
+
+        should 'return an array of 2 with a limit of 2' do
+          get :index,limit: 2
+          assert_response :success
+          assert_equal [@jogtime1.as_json,@jogtime2.as_json].to_json,response.body
+        end
+
+        should 'return an array of 2 with a limit of 2 and sort by date' do
+          get :index,limit: 2,sort: 'date'
+          assert_response :success
+          assert_equal [@jogtime3.as_json,@jogtime2.as_json].to_json,response.body
+        end
+
+        should 'return an array of 2 with a limit of 2 and sort by duration' do
+          get :index,limit: 2,sort: 'duration'
+          assert_response :success
+          assert_equal [@jogtime1.as_json,@jogtime2.as_json].to_json,response.body
+        end
+
+        should 'return an array of 2 with a limit of 2 and sort by distance' do
+          get :index,limit: 2,sort: 'distance'
+          assert_response :success
+          assert_equal [@jogtime2.as_json,@jogtime3.as_json].to_json,response.body
+        end
+
+        should 'return an array of 2 with a limit of 2 and sort by speed' do
+          get :index,limit: 2,sort: 'speed'
+          assert_response :success
+          assert_equal [@jogtime3.as_json,@jogtime2.as_json].to_json,response.body
         end
 
         should 'return a jog_time on show' do
           get :show,id: @jogtime1.id
           assert_response :success
-          assert_equal '{"id":1,"user_id":1,"date":"2016-01-01T00:00:00.000Z","duration":10,"distance":1.0}',response.body
+          assert_equal '{"id":1,"user_id":1,"date":"2016-01-01T00:00:00.000Z","duration":30,"distance":1.0}',response.body
         end
 
         should 'return a new jog_time on create' do
@@ -129,7 +165,15 @@ class Api::JogTimeControllerTest < ActionController::TestCase
           end
         end
 
-        should 'return an updated jog_time on update' do
+        should 'return an error on update with invalid params' do
+          assert_no_difference 'JogTime.count' do
+            get :update,id: @jogtime1.id,jog_time: {date: 'abc'}
+            assert_response :unprocessable_entity
+            assert_equal '["Date invalid"]',response.body
+          end
+        end
+
+        should 'return an updated jog_time on update with valid params' do
           assert_no_difference 'JogTime.count' do
             get :update,id: @jogtime1.id,jog_time: {duration: 50,distance: 5}
             assert_response :success
@@ -141,7 +185,7 @@ class Api::JogTimeControllerTest < ActionController::TestCase
           assert_difference 'JogTime.count',-1 do
             get :destroy,id: @jogtime1.id
             assert_response :success
-            assert_equal '{"id":1,"user_id":1,"date":"2016-01-01T00:00:00.000Z","duration":10,"distance":1.0}',response.body
+            assert_equal '{"id":1,"user_id":1,"date":"2016-01-01T00:00:00.000Z","duration":30,"distance":1.0}',response.body
           end
         end
       end
@@ -152,34 +196,44 @@ class Api::JogTimeControllerTest < ActionController::TestCase
   context 'admin current_user' do
     setup do
       @user = FactoryGirl.create(:admin_user)
+      @jog_time = @user.jog_times.create(date: Time.zone.local(2016,1,1),duration: 10,distance: 1)
       set_authentication_headers_for(@user)
     end
 
     context 'when accessing jog times for another user' do
 
       should 'fail with unauthorized on index' do
-        get :index,user_id: 1
+        get :index,user_id: @user.id
         assert_response :success
+        assert_equal [@jog_time.as_json].to_json,response.body
       end
 
       should 'fail with success on show' do
-        get :show,id: 1,user_id: 1
+        get :show,id: @jog_time.id,user_id: @user.id
         assert_response :success
+        assert_equal @jog_time.to_json,response.body
       end
 
       should 'fail with success on create' do
-        get :create,user_id: 1,jog_time: {date: Time.zone.local(2016,1,1),duration: 10,distance: 1}
-        assert_response :success
+        assert_difference 'JogTime.count' do
+          get :create,user_id: @user.id,jog_time: {date: Time.zone.local(2016,1,2),duration: 20,distance: 2}
+          assert_response :success
+          assert_equal JogTime.last.to_json,response.body
+        end
       end
 
       should 'fail with success on update' do
-        get :update,id: 1,user_id: 1
+        get :update,id: @jog_time.id,user_id: @user.id
         assert_response :success
+        assert_equal @jog_time.to_json,response.body
       end
 
       should 'fail with success on destroy' do
-        get :destroy,id: 1,user_id: 1
-        assert_response :success
+        assert_difference 'JogTime.count',-1 do
+          get :destroy,id: @jog_time.id,user_id: @user.id
+          assert_response :success
+          assert_equal @jog_time.to_json,response.body
+        end
       end
     end
 

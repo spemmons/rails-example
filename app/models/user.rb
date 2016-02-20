@@ -2,6 +2,10 @@ class User < ActiveRecord::Base
 
   has_many :jog_times,dependent: :delete_all
 
+  USER_ROLES = [:admin,:manager]
+
+  bitmask :roles, as: USER_ROLES, zero_value: :regular, null: false
+
   # Include default devise modules. Others available are:
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, :recoverable, :rememberable, :trackable, :validatable, :confirmable
@@ -26,5 +30,9 @@ class User < ActiveRecord::Base
       self.errors.add(:email, :already_confirmed)
       false
     end
+  end
+
+  def as_json(options = {})
+    super(only: [:id,:email,:roles])
   end
 end

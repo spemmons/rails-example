@@ -1,5 +1,6 @@
 class Api::JogTimeController < ApiController
 
+  before_filter :authorize_user
   before_action :set_user
   before_action :set_jog_time,except: [:index,:create]
 
@@ -31,6 +32,11 @@ class Api::JogTimeController < ApiController
   end
 
 protected
+
+  def authorize_user
+    authorize!(:manage,:user) if params[:user_id]
+    authorize!(:manage,:jog_time)
+  end
 
   def set_user
     @user = params[:user_id] ? User.find_by_id(params[:user_id]) : current_user

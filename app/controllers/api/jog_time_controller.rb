@@ -2,7 +2,7 @@ class Api::JogTimeController < ApiController
 
   before_filter :authorize_user
   before_action :set_user
-  before_action :set_jog_time,except: [:index,:create]
+  before_action :set_jog_time,except: [:index,:create,:weekly_summary]
 
   def index
     scope = @user.jog_times
@@ -45,6 +45,24 @@ class Api::JogTimeController < ApiController
     render inline: @jog_time.to_json
   end
 
+  def weekly_summaries
+    result,current_week,end_of_week = [],[],nil
+
+    @user.jog_times.order('date asc').each do |jog_time|
+      if jog_time.date < (end_of_week ||= jog_time.date.end_of_week)
+        current_week << jog_time
+      else
+        result << build_weekly_summary(current_week)
+        current_week = [jog_time]
+        end_of_week = jog_time.date.end_of_week
+      end
+    end
+
+    result << build_weekly_summary(current_week) unless current_week.empty?
+
+    render inline: result.to_json
+  end
+
 protected
 
   def authorize_user
@@ -80,6 +98,30 @@ protected
     return scope unless from and to
 
     scope.where('date between ? and ?',from,to)
+  end
+
+  def build_weekly_summary(jog_times)
+    distances,durations,speeds = [],[],[]
+
+    jog_times.each do |jog_time|
+      distances << jog_time.distance
+      durations << jog_time.duration
+      speeds    << jog_time.distance / jog_time.duration
+    end
+
+    {
+        date: jog_times.first.date.beginning_of_week,
+        count: jog_times.length,
+        distance_min: distances.min,
+        distance_max: distances.max,
+        distance_mean: distances.sum / distances.length,
+        duration_min: durations.min,
+        duration_max: durations.max,
+        duration_mean: durations.sum / durations.length,
+        speed_min: speeds.min,
+        speed_max: speeds.max,
+        speed_mean: speeds.sum / speeds.length,
+    }
   end
 
 end

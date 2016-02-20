@@ -100,6 +100,12 @@ class Api::JogTimeControllerTest < ActionController::TestCase
           end
         end
 
+        should 'return an empty array on weekly_summaries' do
+          get :weekly_summaries
+          assert_response :success
+          assert_equal '[]',response.body
+        end
+
       end
 
       context 'with several existing job_times' do
@@ -187,6 +193,14 @@ class Api::JogTimeControllerTest < ActionController::TestCase
             assert_response :success
             assert_equal '{"id":1,"user_id":1,"date":"2016-01-01T00:00:00.000Z","duration":30,"distance":1.0}',response.body
           end
+        end
+
+        should 'return an array of 2 on weekly_summaries' do
+          @jogtime4 = @user.jog_times.create!(date: Time.zone.local(2016,2,1),duration: 1,distance: 1)
+
+          get :weekly_summaries
+          assert_response :success
+          assert_equal '[{"date":"2015-12-28T00:00:00.000Z","count":3,"distance_min":1.0,"distance_max":3.0,"distance_mean":2.0,"duration_min":10,"duration_max":30,"duration_mean":20,"speed_min":0.03333333333333333,"speed_max":0.2,"speed_mean":0.12777777777777777},{"date":"2016-02-01T00:00:00.000Z","count":1,"distance_min":1.0,"distance_max":1.0,"distance_mean":1.0,"duration_min":1,"duration_max":1,"duration_mean":1,"speed_min":1.0,"speed_max":1.0,"speed_mean":1.0}]',response.body
         end
       end
     end

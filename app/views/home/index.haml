@@ -28,5 +28,5 @@
         %span(ng-class='{"alert-danger": user.id != currentUser.id}') {{ user.id == currentUser.id ? 'Welcome, ' : 'Impersonating: '}}
         %span {{ currentUser.email }}!
       %jog-time-viewer(ng-show='currentState == "jogtimes"')
-      %div(ng-show='currentState == "weeks"') WEEKS!
+      %weekly-summary-viewer(ng-show='currentState == "weeks"')
       %user-list(ng-show='currentState == "users"' impersonate='impersonateUser' ng-if='user.roles.length > 0')

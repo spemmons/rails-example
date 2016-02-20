@@ -10,9 +10,14 @@ Rails.application.routes.draw do
 
     resources :user do
       resources :jog_time
+
+      get 'weekly_summaries' => 'jog_time#weekly_summaries'
     end
 
     resources :jog_time
+
+    get 'weekly_summaries' => 'jog_time#weekly_summaries'
+
   end
 
 end

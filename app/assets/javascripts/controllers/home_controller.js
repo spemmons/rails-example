@@ -1,7 +1,6 @@
-app.controller('HomeController',['$scope','$rootScope','$http',function($scope,$rootScope,$http) {
-  $scope.stateTypes = ['jogtimes','weeks'];
-  $scope.stateLabels = {jogtimes: 'Jog Times',weeks: 'Weeks'};
-  $scope.currentState = $scope.stateTypes[0];
+app.controller('HomeController',['$scope','$rootScope','$auth','$window','$http',function($scope,$rootScope,$auth,$window,$http) {
+  $scope.stateTypes = {jogtimes: 'Jog Times',weeks: 'Weeks'};
+  $scope.currentState = _.keys($scope.stateTypes)[0];
 
   $scope.setHomeState = function(state){
     $scope.currentState = state;

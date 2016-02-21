@@ -3,6 +3,7 @@ require 'minitest/reporters'
 require 'mocha/mini_test'
 
 SimpleCov.start do
+  add_filter '/spec/'
   add_filter '/test/'
 end
 

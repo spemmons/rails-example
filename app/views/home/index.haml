@@ -6,9 +6,9 @@
       %ul.nav.navbar-nav.navbar-right
         %li
           %a(ng-click='signOut()' ng-if='user.signedIn') Sign Out
-      %ul.nav.navbar-nav.navbar-right(ng-repeat='state in stateTypes' ng-if='user.signedIn && user.roles.length > 0')
+      %ul.nav.navbar-nav.navbar-right(ng-repeat='(state,label) in stateTypes' ng-if='user.signedIn && user.roles.length > 0')
         %li(ng-class='{active: currentState == state}')
-          %a(ng-click='setHomeState(state)') {{ stateLabels[state] }}
+          %a(ng-click='setHomeState(state)') {{ label }}
       %ul.nav.navbar-nav.navbar-right(ng-if='user.signedIn && user.roles.length > 0')
         %li(ng-class='{active: currentState == "users"}')
           %a(ng-click='setHomeState("users")') Users

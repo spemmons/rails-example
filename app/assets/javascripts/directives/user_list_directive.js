@@ -1,19 +1,20 @@
 app.directive('userList', function() {
   return {
-    templateUrl: function(elem, attr) {
-      return <%= "'#{ asset_path('directives/user_list.html') }'" %>;
-    },
+    templateUrl: 'directives/user_list.html',
+    scope: true,
     controller: ['$scope','$rootScope','$http',function($scope,$rootScope,$http) {
-      $scope.roleLabels = {regular: 'Regular',manager: 'Manager',admin: 'Admin'}
+      $scope.roleLabels = {regular: 'Regular',manager: 'Manager',admin: 'Admin'};
 
       $scope.users = [];
       $scope.userErrors = [];
       $scope.targetUser = {roles: []};
       $scope.lastUser = {};
 
-      $http.get('/api/user').success(function(result){
-        $scope.users = _.sortBy(result,function(entry){ return entry.email; });
-      });
+      $http.get('/api/user')
+        .success(function(result){
+          $scope.users = _.sortBy(result,function(entry){ return entry.email; });
+        })
+        .error(setUserErrors);
 
       $scope.toggleTargetUser = function(target){
         $scope.targetUser = $scope.targetUser === target ? {roles: []} : target;

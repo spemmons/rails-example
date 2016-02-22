@@ -1,8 +1,6 @@
 app.directive('editUser', function() {
   return {
-    templateUrl: function(elem, attr) {
-      return <%= "'#{ asset_path('directives/edit_user.html') }'" %>;
-    },
+    templateUrl: 'directives/edit_user.html',
     scope: {
       target: '=target',
       errors: '=errors',

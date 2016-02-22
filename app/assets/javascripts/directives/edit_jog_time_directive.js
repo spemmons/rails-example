@@ -1,8 +1,6 @@
 app.directive('editJogTime', function() {
   return {
-    templateUrl: function(elem, attr) {
-      return <%= "'#{ asset_path('directives/edit_jog_time.html') }'" %>;
-    },
+    templateUrl: 'directives/edit_jog_time.html',
     scope: {
       jogtime: '=jogtime',
       errors: '=errors',

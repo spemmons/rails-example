@@ -1,8 +1,6 @@
 app.directive('jogTimeViewer', function() {
   return {
-    templateUrl: function(elem, attr) {
-      return <%= "'#{ asset_path('directives/jog_time_viewer.html') }'" %>;
-    },
+    templateUrl: 'directives/jog_time_viewer.html',
     scope: true,
     controller: ['$scope','$rootScope','$http',function($scope,$rootScope,$http) {
       $scope.sortColumns = {date: 'Date',duration: 'Duration',distance: 'Distance',speed: 'Ave. Speed'};
@@ -94,7 +92,7 @@ app.directive('jogTimeViewer', function() {
         var url = jogTimeURL() + '?sort=' + $scope.options.sort + '&limit=' + $scope.options.maxTimes;
         if ($scope.validDateRange())
           url += '&from=' + $scope.options.fromDate.toISOString() + '&to=' + $scope.options.toDate.toISOString();
-        $http.get(url).success(updateState);
+        $http.get(url).success(updateState).error(setJogTimeErrors);
       };
 
       function updateState(jogtimes){

@@ -2,6 +2,7 @@ var app = angular.module('ToptalTest',[
   'ngRoute',
   'ngResource',
   'ng-token-auth',
+  'templates',
   'ui.bootstrap',
   'ui.bootstrap.datepicker'
 ]);
@@ -14,9 +15,9 @@ app.config(['$locationProvider','$authProvider','$httpProvider',function($locati
 
 }]);
 
-app.filter('floor', function() { return function(input) { return Math.floor(input); }; });
+app.service('globalSetup',['$rootScope','$auth','$window',function($rootScope,$auth,$window){
 
-app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
+  $rootScope.unitTypes = {km: 1.0, mi: 1.60934};
 
   $auth.initialize();
 
@@ -83,7 +84,7 @@ app.run(['$rootScope','$auth','$window',function($rootScope,$auth,$window){
       });
   };
 
-  $rootScope.unitTypes = {km: 1.0, mi: 1.60934};
-
-
+  return {};
 }]);
+
+app.filter('floor', function() { return function(input) { return Math.floor(input); }; });

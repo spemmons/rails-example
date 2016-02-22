@@ -1,8 +1,6 @@
 app.directive('stdDatePicker', function() {
   return {
-    templateUrl: function(elem, attr) {
-      return <%= "'#{ asset_path('directives/std_date_picker.html') }'" %>;
-    },
+    templateUrl: 'directives/std_date_picker.html',
     scope: {
       date: '=date',
       options: '=disabled'

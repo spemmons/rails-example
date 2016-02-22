@@ -2,25 +2,23 @@
 
 describe('controller: HomeController', function() {
 
-  var $scope;
+  var scope;
 
-  beforeEach(module('ToptalTest',function($provide){
+  beforeEach(module('ToptalTest'));
 
-  }));
-
-  beforeEach(inject(function($injector,$controller,$rootScope) {
-    $scope = $rootScope.$new();
-    $controller('HomeController', { $scope: $scope });
+  beforeEach(inject(function($controller,$rootScope) {
+    scope = $rootScope.$new();
+    $controller('HomeController', { $scope: scope });
   }));
 
   it('should set state',function(){
-    expect($scope.stateTypes).toEqual({jogtimes: 'Jog Times',weeks: 'Weeks'});
-    expect($scope.currentState).toEqual('jogtimes');
+    expect(scope.stateTypes).toEqual({jogtimes: 'Jog Times',weeks: 'Weeks'});
+    expect(scope.currentState).toEqual('jogtimes');
   });
 
   it('should update update',function(){
-    $scope.setHomeState('weeks');
-    expect($scope.currentState).toEqual('weeks');
+    scope.setHomeState('weeks');
+    expect(scope.currentState).toEqual('weeks');
   });
 
 });

@@ -1,8 +1,6 @@
 app.directive('weeklySummaryViewer', function() {
   return {
-    templateUrl: function(elem, attr) {
-      return <%= "'#{ asset_path('directives/weekly_summary_viewer.html') }'" %>;
-    },
+    templateUrl: 'directives/weekly_summary_viewer.html',
     scope: true,
     controller: ['$scope','$rootScope','$http',function($scope,$rootScope,$http) {
       $scope.topColumns = ['','Duration','Distance','Speed'];
@@ -20,11 +18,6 @@ app.directive('weeklySummaryViewer', function() {
 
       $scope.setSortOption = function(value){
         $scope.options.sort = value;
-        updateState($scope.summaries);
-      };
-
-      $scope.setStatOption = function(value){
-        $scope.options.stat = value;
         updateState($scope.summaries);
       };
 

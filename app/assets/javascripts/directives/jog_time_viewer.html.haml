@@ -21,10 +21,10 @@
         %th(ng-repeat='(column,label) in sortColumns' ng-class='{"alert-info": options.sort == column}' ng-click='setSortOption(column)') {{ label }}
     %tbody
       %tr(ng-repeat='jogtime in jogtimes' ng-click='toggleJogTime(jogtime)' ng-class='{info: jogtime.id == newtime.id,success: jogtime.id == lasttime.id}')
-        %td {{ jogtime.date | date:'yyyy-MM-dd':'UTC' }}
-        %td {{ jogtime.duration / 60 / 60 | floor | number: 0 }}h {{ jogtime.duration / 60 % 60 | number: 0 }}m
-        %td {{ jogtime.distance * unitTypes[options.units] }} {{ options.units }}
-        %td {{ jogtime.speed * unitTypes[options.units] * 60 * 60 | number: 1 }} {{ options.units }}ph
+        %td(ng-class='{"alert-info": options.sort == "date"}') {{ jogtime.date | date:'yyyy-MM-dd':'UTC' }}
+        %td(ng-class='{"alert-info": options.sort == "duration"}') {{ jogtime.duration / 60 / 60 | floor | number: 0 }}h {{ jogtime.duration / 60 % 60 | number: 0 }}m
+        %td(ng-class='{"alert-info": options.sort == "distance"}') {{ jogtime.distance * unitTypes[options.units] }} {{ options.units }}
+        %td(ng-class='{"alert-info": options.sort == "speed"}') {{ jogtime.speed * unitTypes[options.units] * 60 * 60 | number: 1 }} {{ options.units }}ph
   %form.form-horizontal
     %fieldset
       .form-group

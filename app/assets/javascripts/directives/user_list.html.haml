@@ -6,10 +6,12 @@
       .navbar-brand Manage Users
     %ul.nav.navbar-nav.navbar-right
       %li
-        %span.navbar-brand Search:
-      %li
-        .form-group
-          %input.form-control.input-sm(type='text' placeholder='Email pattern')
+        %form.navbar-form(role='search')
+          .form-group
+            .input-group.input-group-sm
+              %input.form-control.input-sm(type='text' placeholder='Email pattern')
+              %span.input-group-btn
+                %button.btn.btn-default Search
 %table.table.table-striped.table-hover
   %thead
     %tr
